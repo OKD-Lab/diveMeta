@@ -1,0 +1,12 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "diveMeta: DiVE (Direct Variance Estimation) for meta-analysis using medians"
+type: software
+authors:
+  - family-names: Okuda
+    given-names: Tadahisa
+    orcid: "https://orcid.org/0009-0005-1432-6938"
+repository-code: "https://github.com/OKD-Lab/diveMeta"
+license: MIT
+version: "0.1.0"
+date-released: "2025-08-15"

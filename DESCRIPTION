@@ -1,0 +1,25 @@
+Package: diveMeta
+Type: Package
+Title: DiVE: Direct Variance Estimation for Meta-analysis using Medians
+Version: 0.1.0
+Authors@R:
+    person(given = "Tadahisa",
+           family = "Okuda",
+           email = "tadahisa.okuda@gmail.com",
+           role = c("aut","cre"))
+Description: Implements the DiVE method (Direct Variance Estimation) for pooling
+    study-level effects when only medians and sample sizes are reported.
+    Given per-study median differences and sample sizes, DiVE computes a pooled
+    estimate, a directly estimated variance, and confidence intervals without
+    requiring within-study variance estimates. The default CI uses a t critical
+    value with df = K - 1.
+License: MIT + file LICENSE
+URL: https://github.com/OKD-Lab/diveMeta
+BugReports: https://github.com/OKD-Lab/diveMeta/issues
+Encoding: UTF-8
+Depends: R (>= 3.6)
+Imports:
+    stats
+Suggests:
+    utils
+LazyData: true
