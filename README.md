@@ -96,6 +96,10 @@ We target a **common location shift** δ between groups. Under **approximate dis
 
 For transparency, figures show per-study points labeled by reporting type (mean vs median), and a single pooled DiVE estimate with CI.
 
+## Shared control (multi-arm) handling
+
+When a single control arm is shared across two treatment contrasts, we split the control sample size evenly across the comparisons while keeping the reported central tendencies unchanged. Concretely, for **Nagasako 2009 (Child A/B)** we set **n_g2 = 10** for Child A and **n_g2 = 11** for Child B (median_g2 = 79 for both), so that 10 + 11 = 21 equals the original control size. This prevents double-counting in DiVE’s weights and keeps the analysis fully reproducible.
+
 ## Assumptions (for interpretation)
 
 - **Location-shift estimand**: all studies target the same location shift δ between groups.
