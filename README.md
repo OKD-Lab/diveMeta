@@ -21,11 +21,13 @@ remotes::install_github("OKD-Lab/diveMeta")
 
 ```r
 library(diveMeta)
-
-dat <- read_example("oyelade_sdnn.csv")
-# required columns: study_id, med_g1, n_g1, med_g2, n_g2
-
-fit <- dive_df(dat, direction = "g1_minus_g2", ci_type = "t")
+dat <- read_example("meling_grs_all.csv")   # or "oyelade_sdnn_all.csv"
+fit <- dive_df(
+  transform(dat,
+            ct_g1 = ifelse(!is.na(median_g1), median_g1, mean_g1),
+            ct_g2 = ifelse(!is.na(median_g2), median_g2, mean_g2)),
+  cols = list(med_g1="ct_g1", n_g1="n_g1", med_g2="ct_g2", n_g2="n_g2"),
+  direction = "g1_minus_g2", ci_type = "t")
 print(fit)    # rounded display; internal values are not rounded
 summary(fit)
 ```
@@ -37,7 +39,7 @@ When both mean- and median-reported studies exist, create a **central tendency**
 
 ```r
 library(dplyr)
-dat <- read_example("oyelade_sdnn.csv")   # or your own dataset
+dat <- read_example("oyelade_sdnn_all.csv")   # or your own dataset
 
 # Suppose your data has columns: median_g1, mean_g1, n_g1, median_g2, mean_g2, n_g2
 # Build central tendencies (median preferred; mean as proxy)
@@ -56,6 +58,16 @@ fit <- dive_df(
 )
 print(fit); summary(fit)
 ```
+
+## Available example datasets
+
+- `meling_grs_all.csv`  — includes primary-study medians when available
+- `meling_grs_org.csv`  — follows the original meta-analysis reporting
+- `oyelade_sdnn_all.csv` — includes primary-study medians; shared control split 10/11
+- `oyelade_sdnn_org.csv` — follows the original meta-analysis reporting
+
+Use `read_example("<file>.csv")` to load; then build central tendencies per group
+(median preferred; mean as proxy).
 
 ## Output fields
 
