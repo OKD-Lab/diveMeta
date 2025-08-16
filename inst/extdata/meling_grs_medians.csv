@@ -1,5 +1,12 @@
-study_id,med_g1,n_g1,med_g2,n_g2
-Shore2016,26.0,10,22.0,10
-Calatayud2010,28.5,10,19.25,10
-Desender2017_PSR,14.0,17,13.0,17
-Haycock2010,28.0,16,26.0,16
+﻿study_id,mean_g1,median_g1,n_g1,mean_g2,median_g2,n_g2
+Maertens2017,39.36,NA,9,23.09,NA,10
+Nilsson2017,14,NA,11,14.3,NA,12
+Waterman2016,22.5,NA,12,21.25,NA,10
+Patel2016,29.91,NA,11,26.18,NA,11
+Peltan2012,3.1,NA,27,2.9,NA,24
+Carlsen2015,26.9,NA,9,21.7,NA,7
+Zendeja2011,21.9,NA,26,18.3,NA,24
+Desender2017,NA,29,48,NA,28,45
+Shore2016,NA,34,10,NA,30,11
+Calatayud2010,NA,28.5,8,NA,19.25,8
+Haycock2010,NA,16,54,NA,17,54
