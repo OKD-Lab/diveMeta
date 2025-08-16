@@ -1,11 +1,9 @@
 #' DiVE meta-analysis from a data.frame
 #'
-#' @param data data.frame with columns for group-level **central tendency**
-#'   (median by default; mean as a proxy under symmetry), and sample sizes.
-#'   Map them via `cols`, e.g., `cols = list(med_g1 = "ct_g1", ...)`.
-#' @param cols named list mapping column names; the `med_*` slots may receive
-#'   medians or means (as proxies) as central tendencies on a common scale.
-#'
+#' @param data data.frame with columns for group-level **central tendencies**
+#'   (median by default; mean as proxy under approximate symmetry) and sample sizes.
+#' @param cols named list mapping column names. The `med_*` slots may receive
+#'   medians or means (as proxies), e.g., `cols = list(med_g1 = "ct_g1", ...)`.
 #' @inheritParams dive
 #' @export
 
