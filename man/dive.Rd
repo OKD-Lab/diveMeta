@@ -31,6 +31,12 @@ dive(
 \item{direction}{character, \code{"g1_minus_g2"} (default) or \code{"g2_minus_g1"}}
 
 \item{ci_type}{character, \code{"t"} (default) or \code{"normal"}}
+
+\item{x}{An object of class \code{dive}.}
+
+\item{...}{Further arguments passed to or from other methods (unused).}
+
+\item{object}{An object of class \code{dive}.}
 }
 \value{
 An object of class \code{"dive"} with fields:
@@ -41,13 +47,6 @@ An object of class \code{"dive"} with fields:
 Pooled between-group difference using sample-size (IVW-style) weights and
 a direct estimator of the variance; no within-study variances are required.
 }
-\section{Methods (by generic)}{
-\itemize{
-\item \code{print(dive)}: Print method for \code{"dive"} objects
-
-\item \code{summary(dive)}: Summary method for \code{"dive"} objects
-
-}}
 \examples{
 med_g1 <- c(30,28,26); n_g1 <- c(50,60,55)
 med_g2 <- c(25,27,24); n_g2 <- c(50,65,50)

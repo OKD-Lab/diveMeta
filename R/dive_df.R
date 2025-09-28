@@ -1,12 +1,14 @@
-#' DiVE meta-analysis from a data.frame
+#' DiVE from a data.frame
 #'
-#' @param data data.frame with group-level central tendencies
-#'   (median by default; mean as proxy under approximate symmetry) and sample sizes.
-#' @param cols mapping of column names. The `med_*` slots may receive those central tendencies
-#'   (e.g., `cols = list(med_g1="ct_g1", ...)`).
+#' Wrapper that maps columns in \code{data} to \code{dive()} inputs.
+#' @param data data.frame with columns for medians and sample sizes
+#' @param cols named list mapping column names
 #' @inheritParams dive
+#' @return An object of class \code{"dive"} (see \code{\link{dive}}).
+#' @examples
+#' # dat <- read_example("oyelade_sdnn.csv")
+#' # fit <- dive_df(dat)
 #' @export
-
 dive_df <- function(data,
                     cols = list(med_g1 = "med_g1", n_g1 = "n_g1",
                                 med_g2 = "med_g2", n_g2 = "n_g2"),
@@ -25,6 +27,9 @@ dive_df <- function(data,
   dive(med_g1, n_g1, med_g2, n_g2, direction = direction, ci_type = ci_type)
 }
 
+#' @rdname dive
+#' @param x An object of class \code{dive}.
+#' @param ... Further arguments passed to or from other methods (unused).
 #' @export
 print.dive <- function(x, ...) {
   fmt <- function(z) sprintf("%.2f", z)
@@ -41,6 +46,9 @@ print.dive <- function(x, ...) {
   invisible(x)
 }
 
+
+#' @rdname dive
+#' @param object An object of class \code{dive}.
 #' @export
 summary.dive <- function(object, ...) {
   res <- list(

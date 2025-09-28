@@ -10,9 +10,9 @@ read_example(
 )
 }
 \arguments{
-\item{name}{character, one of
-\code{"oyelade_sdnn.csv"}, \code{"meling_grs.csv"},
-\code{"oyelade_sdnn_org.csv"}, \code{"meling_grs_org.csv"}}
+\item{name}{character, file name in inst/extdata.
+One of: "meling_grs_all.csv", "meling_grs_org.csv",
+"oyelade_sdnn_all.csv", "oyelade_sdnn_org.csv".}
 }
 \value{
 data.frame
@@ -21,5 +21,6 @@ data.frame
 Read example datasets shipped with the package
 }
 \examples{
-read_example("oyelade_sdnn.csv")
+read_example("oyelade_sdnn_org.csv")
+read_example("meling_grs_org.csv")
 }
