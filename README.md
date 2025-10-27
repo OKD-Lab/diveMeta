@@ -136,7 +136,28 @@ For transparency, figures show per-study points labeled by reporting type (mean 
 
 ## Shared control (multi-arm) handling
 
-When a single control arm is shared across two treatment contrasts, we split the control sample size evenly across the comparisons while keeping the reported central tendencies unchanged. Concretely, for **Nagasako 2009 (Child A/B)** we set **n_g2 = 10** for Child A and **n_g2 = 11** for Child B (median_g2 = 79 for both), so that 10 + 11 = 21 equals the original control size. This prevents double-counting in DiVE’s weights and keeps the analysis fully reproducible.
+If a single control arm is reused to form two contrasts, split the control sample size across the comparisons before running dive(), while keeping the reported central tendencies unchanged. This avoids double-counting in DiVE’s sample-size weights.
+
+Note for the shipped examples. The CSVs included in this repository list Nagasako 2009 as a single row (control n_g2 = 21) and therefore no split is applied in the packaged data. If you prefer the “split-control” representation (e.g., 10 and 11), create two rows in your working dataset as follows:
+
+```r
+# example: split a shared control (n_g2 = 21) into 10 and 11
+library(dplyr)
+
+split_control <- function(df, study_id, g2_n1 = 10, g2_n2 = 11) {
+  i <- which(df$study_id == study_id)
+  stopifnot(length(i) == 1L, df$n_g2[i] == (g2_n1 + g2_n2))
+  r1 <- df[i, ]; r2 <- df[i, ]
+  r1$study_id <- paste0(study_id, "_A"); r1$n_g2 <- g2_n1
+  r2$study_id <- paste0(study_id, "_B"); r2$n_g2 <- g2_n2
+  bind_rows(df[-i, ], r1, r2)
+}
+
+# usage:
+# dat <- read_example("oyelade_sdnn_all.csv")
+# dat_split <- split_control(dat, "Nagasako2009", g2_n1 = 10, g2_n2 = 11)
+# fit <- dive_df_ct(dat_split, direction = "g1_minus_g2", ci_type = "t")
+```
 
 
 ## Assumptions (for interpretation)
