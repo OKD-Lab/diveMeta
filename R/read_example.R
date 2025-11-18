@@ -1,16 +1,28 @@
-#' Read example datasets shipped with the package
+#' Read example dataset shipped with the package
 #'
-#' @param name character, file name in inst/extdata.
-#'   One of: "meling_grs_all.csv", "meling_grs_org.csv",
-#'           "oyelade_sdnn_all.csv", "oyelade_sdnn_org.csv".
-#' @return data.frame
+#' @description
+#' Read the example dataset used in the manuscript, based on the
+#' Langhorne et al. early supported discharge (ESD) trials.
+#'
+#' @param name Character string; currently only
+#'   \code{"Langhorne_ESD_all.csv"} is available.
+#'
+#' @return A \code{data.frame} with one row per study and the columns
+#'   \code{study_id}, \code{n_g1}, \code{median_g1}, \code{mean_g1},
+#'   \code{n_g2}, \code{median_g2}, \code{mean_g2}.
+#'
 #' @examples
-#' read_example("oyelade_sdnn_org.csv")
-#' read_example("meling_grs_org.csv")
+#' dat <- read_example("Langhorne_ESD_all.csv")
+#' head(dat)
+#'
 #' @export
-read_example <- function(name = c("meling_grs_all.csv", "meling_grs_org.csv",
-                                  "oyelade_sdnn_all.csv", "oyelade_sdnn_org.csv")) {
+read_example <- function(name = c("Langhorne_ESD_all.csv")) {
   name <- match.arg(name)
-  f <- system.file("extdata", name, package = "diveMeta", mustWork = TRUE)
-  utils::read.csv(f, stringsAsFactors = FALSE)
+  
+  path <- system.file("extdata", name, package = "diveMeta")
+  if (path == "") {
+    stop("File not found in inst/extdata: ", name, call. = FALSE)
+  }
+  
+  utils::read.csv(path, stringsAsFactors = FALSE)
 }

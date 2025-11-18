@@ -1,15 +1,22 @@
 #' DiVE meta-analysis using medians
 #'
-#' @param med_g1 numeric vector of group 1 medians (length K)
-#' @param n_g1   integer vector of group 1 sample sizes (length K, >0)
-#' @param med_g2 numeric vector of group 2 medians (length K)
-#' @param n_g2   integer vector of group 2 sample sizes (length K, >0)
-#' @param direction character: "g1_minus_g2" (default) or "g2_minus_g1"
-#' @param ci_type character: "t" (default) or "normal"
-#' @return an object of class "dive" with fields:
-#'   estimate, se, ci_low, ci_high, var_hat,
-#'   weights (integer), wtilde (numeric),
-#'   diagnostics = list(wmax, n_studies, ci_type, direction)
+#' Pooled between-group difference using sample-size (IVW-style) weights and
+#' a direct estimator of the variance; no within-study variances are required.
+#'
+#' @param med_g1 numeric, group 1 medians (length K)
+#' @param n_g1   integer, group 1 sample sizes (length K, >0)
+#' @param med_g2 numeric, group 2 medians (length K)
+#' @param n_g2   integer, group 2 sample sizes (length K, >0)
+#' @param direction character, \code{"g1_minus_g2"} (default) or \code{"g2_minus_g1"}
+#' @param ci_type  character, \code{"t"} (default) or \code{"normal"}
+#' @return An object of class \code{"dive"} with fields:
+#'   \code{estimate}, \code{se}, \code{ci_low}, \code{ci_high},
+#'   \code{var_hat}, \code{weights}, \code{wtilde}, and \code{diagnostics}.
+#' @examples
+#' med_g1 <- c(30,28,26); n_g1 <- c(50,60,55)
+#' med_g2 <- c(25,27,24); n_g2 <- c(50,65,50)
+#' fit <- dive(med_g1, n_g1, med_g2, n_g2)
+#' print(fit)
 #' @export
 dive <- function(med_g1, n_g1, med_g2, n_g2,
                  direction = c("g1_minus_g2","g2_minus_g1"),

@@ -13,8 +13,8 @@
 #'   \code{"median_first"} uses median when available, otherwise mean.
 #' @return An object of class \code{"dive"} (see [dive()]).
 #' @examples
-#' # dat <- read_example("oyelade_sdnn_org.csv")
-#' # fit <- dive_df_ct(dat, direction="g1_minus_g2", ci_type="t")
+#' # dat <- read_example("Langhorne_ESD_all.csv")
+#' # fit <- dive_df_ct(dat, direction = "g1_minus_g2", ci_type = "t")
 #' # print(fit)
 #' @export
 dive_df_ct <- function(data,

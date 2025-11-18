@@ -2,25 +2,25 @@
 % Please edit documentation in R/read_example.R
 \name{read_example}
 \alias{read_example}
-\title{Read example datasets shipped with the package}
+\title{Read example dataset shipped with the package}
 \usage{
-read_example(
-  name = c("meling_grs_all.csv", "meling_grs_org.csv", "oyelade_sdnn_all.csv",
-    "oyelade_sdnn_org.csv")
-)
+read_example(name = c("Langhorne_ESD_all.csv"))
 }
 \arguments{
-\item{name}{character, file name in inst/extdata.
-One of: "meling_grs_all.csv", "meling_grs_org.csv",
-"oyelade_sdnn_all.csv", "oyelade_sdnn_org.csv".}
+\item{name}{Character string; currently only
+\code{"Langhorne_ESD_all.csv"} is available.}
 }
 \value{
-data.frame
+A \code{data.frame} with one row per study and the columns
+\code{study_id}, \code{n_g1}, \code{median_g1}, \code{mean_g1},
+\code{n_g2}, \code{median_g2}, \code{mean_g2}.
 }
 \description{
-Read example datasets shipped with the package
+Read the example dataset used in the manuscript, based on the
+Langhorne et al. early supported discharge (ESD) trials.
 }
 \examples{
-read_example("oyelade_sdnn_org.csv")
-read_example("meling_grs_org.csv")
+dat <- read_example("Langhorne_ESD_all.csv")
+head(dat)
+
 }

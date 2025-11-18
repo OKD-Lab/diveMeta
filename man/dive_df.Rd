@@ -27,6 +27,24 @@ An object of class \code{"dive"} (see \code{\link{dive}}).
 Wrapper that maps columns in \code{data} to \code{dive()} inputs.
 }
 \examples{
-# dat <- read_example("oyelade_sdnn.csv")
-# fit <- dive_df(dat)
+dat <- read_example("Langhorne_ESD_all.csv")
+
+# Build central tendencies (median preferred; mean as proxy)
+dat_ct <- transform(
+  dat,
+  ct_g1 = ifelse(!is.na(median_g1), median_g1, mean_g1),
+  ct_g2 = ifelse(!is.na(median_g2), median_g2, mean_g2)
+)
+
+# Drop studies with no usable central tendency in either group
+dat_ct <- subset(dat_ct, !is.na(ct_g1) & !is.na(ct_g2))
+
+fit <- dive_df(
+  dat_ct,
+  cols = list(med_g1 = "ct_g1", n_g1 = "n_g1",
+              med_g2 = "ct_g2", n_g2 = "n_g2"),
+  direction = "g1_minus_g2",
+  ci_type   = "t"
+)
+print(fit)
 }

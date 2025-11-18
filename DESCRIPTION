@@ -1,6 +1,6 @@
 Package: diveMeta
 Type: Package
-Title: DiVE: Direct Variance Estimation for Meta-analysis using Medians
+Title: DiVE: Direct Variance Estimation for Meta-Analysis using Medians
 Version: 0.1.0
 Authors@R:
     person(given = "Tadahisa",

@@ -31,7 +31,7 @@ Convenience wrapper that builds per-study central tendencies and then calls
 as a proxy under approximate symmetry.
 }
 \examples{
-# dat <- read_example("oyelade_sdnn_org.csv")
-# fit <- dive_df_ct(dat, direction="g1_minus_g2", ci_type="t")
+# dat <- read_example("Langhorne_ESD_all.csv")
+# fit <- dive_df_ct(dat, direction = "g1_minus_g2", ci_type = "t")
 # print(fit)
 }

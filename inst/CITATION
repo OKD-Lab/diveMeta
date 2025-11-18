@@ -1,10 +1,10 @@
 citHeader("To cite diveMeta (DiVE) in publications, use:")
 
-citEntry(
-  entry  = "Manual",
-  title  = "diveMeta: DiVE (Direct Variance Estimation) for meta-analysis using medians",
-  author = person(given = "Tadahisa", family = "Okuda"),
-  year   = "2025",
-  note   = "R package version 0.1.0",
-  url    = "https://github.com/OKD-Lab/diveMeta"
+bibentry(
+  bibtype = "Manual",
+  title   = "diveMeta: DiVE (Direct Variance Estimation) for Meta-analysis using Medians",
+  author  = person(given = "Tadahisa", family = "Okuda"),
+  year    = "2025",
+  note    = "R package version 0.1.0",
+  url     = "https://github.com/OKD-Lab/diveMeta"
 )
