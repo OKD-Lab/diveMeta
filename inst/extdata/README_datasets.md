@@ -1,18 +1,25 @@
-# Example datasets (inst/extdata)
+# Example dataset (inst/extdata)
 
-## Common columns
-- `study_id` : study label (may contain year)
-- `mean_g1`, `median_g1`, `n_g1` : group 1 (intervention/patients)
-- `mean_g2`, `median_g2`, `n_g2` : group 2 (control/healthy)
-- Units: GRS (dimensionless score), SDNN (ms)
+## Columns
 
-## File variants
-- `meling_grs_all.csv`  : includes primary-study medians when available.
-- `meling_grs_org.csv`  : follows the original meta-analysis reporting.
-- `oyelade_sdnn_all.csv`: includes primary-study medians; shared control split 10/11.
-- `oyelade_sdnn_org.csv`: follows the original meta-analysis reporting.
+- `study_id`  : study label (may contain year)
+- `n_g1`      : sample size in group 1 (ESD)
+- `median_g1`, `mean_g1` : central tendencies for group 1
+- `n_g2`      : sample size in group 2 (conventional care)
+- `median_g2`, `mean_g2` : central tendencies for group 2
+
+Units: length of initial hospital stay in days.
+
+
+## File
+
+- `Langhorne_ESD_all.csv` : early supported discharge (ESD) vs conventional care after acute stroke; derived from the collection in Langhorne et al.
+  Central tendencies are those reported in the primary studies (medians and/or means).
+
 
 ## Notes
-- **Central tendency** used in analyses: median when available; otherwise mean as a proxy under approximate symmetry (common location-shift estimand δ).
-- **Shared control (Oyelade, Nagasako 2009)**: control size 21 split as n_g2=10 (Child A) and 11 (Child B); medians unchanged (median_g2=79).
-- No within-study variances are provided/used; DiVE does not estimate per-study CIs.
+
+- Analyses use a central tendency per group: median when available; otherwise mean as a proxy under approximate symmetry.
+- No within-study variances are provided or used; DiVE does not estimate per-study confidence intervals.
+- Group 1 (g1) is consistently the ESD/intervention arm; group 2 (g2) is the
+  conventional care/control arm.

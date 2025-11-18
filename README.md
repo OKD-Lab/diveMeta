@@ -2,13 +2,13 @@
 
 **DiVE (Direct Variance Estimation)** for meta-analysis using **medians**.
 
-This package implements DiVE for pooling study-level differences when only medians and sample sizes are available. The method returns a pooled difference, a directly estimated variance, and confidence intervals without requiring within-study variances.
+This package implements DiVE for pooling study-level differences when only central tendencies (medians and/or means) and sample sizes are available.
+The method returns a pooled difference, a directly estimated variance, and confidence intervals without requiring within-study variances.
 
-> This repository is intended for **method demonstration (Example)**, not for
-> making clinical claims. The code is deterministic: the same inputs yield the
-> same outputs.
+> This repository is intended for **method demonstration (Example)**, not for making clinical claims. The code is deterministic: the same inputs yield the same outputs.
 
 ---
+
 
 ## Installation
 
@@ -18,167 +18,185 @@ remotes::install_github("OKD-Lab/diveMeta")
 ```
 
 
-## Minimal example
+## Minimal example (Langhorne ESD data)
+
+The package ships one example dataset, Langhorne_ESD_all.csv, derived from a published meta-analysis of early supported discharge (ESD) versus conventional care after acute stroke. The outcome is the length of initial hospital stay (days).
 
 ```r
 library(diveMeta)
-dat <- read_example("meling_grs_all.csv")   # or "oyelade_sdnn_all.csv"
-fit <- dive_df(
-  transform(dat,
-            ct_g1 = ifelse(!is.na(median_g1), median_g1, mean_g1),
-            ct_g2 = ifelse(!is.na(median_g2), median_g2, mean_g2)),
-  cols = list(med_g1="ct_g1", n_g1="n_g1", med_g2="ct_g2", n_g2="n_g2"),
-  direction = "g1_minus_g2", ci_type = "t")
+
+# Load example data
+dat <- read_example("Langhorne_ESD_all.csv")
+
+# Keep studies with at least one central tendency per group
+dat_use <- subset(
+  dat,
+  (!is.na(median_g1) | !is.na(mean_g1)) &
+  (!is.na(median_g2) | !is.na(mean_g2))
+)
+
+# One-line DiVE with automatic central tendencies
+fit <- dive_df_ct(
+  dat_use,
+  direction = "g1_minus_g2",  # ESD (g1) minus conventional care (g2)
+  ci_type   = "t"
+)
+
 print(fit)    # rounded display; internal values are not rounded
 summary(fit)
 ```
+Here, dive_df_ct() constructs per-study central tendencies (see below) and calls dive_df() internally.
 
 
-## One-liner: automatic central tendencies
+## Central tendencies and mixed reporting
 
-If your dataset contains both `median_*` and `mean_*` columns, `dive_df_ct()` builds
-per-study central tendencies (use median if available; otherwise mean) and calls
-`dive_df()` internally.
+When both mean- and median-reported studies exist, DiVE works on a central tendency per group:
+- Use the median if available.
+- Otherwise, fall back to the mean (used as a proxy under approximate symmetry of the outcome distribution).
 
-```r
-library(diveMeta)
-dat <- read_example("meling_grs_all.csv")   # or "oyelade_sdnn_all.csv"
-fit <- dive_df_ct(dat, direction = "g1_minus_g2", ci_type = "t")  # median-first policy
-print(fit); summary(fit)
-```
-
-
-## Mixed reporting: pooling means (as proxies) with medians
-
-When both mean- and median-reported studies exist, create a **central tendency** per group: use the median if available; otherwise fall back to the mean (proxy under symmetry).
-*Tip: the demo files include both means and medians; adapt the column names as needed for your own data.*
+You can construct these central tendencies yourself:
 
 ```r
 library(dplyr)
-dat <- read_example("oyelade_sdnn_all.csv")   # or your own dataset
+dat <- read_example("Langhorne_ESD_all.csv")
 
-# Suppose your data has columns: median_g1, mean_g1, n_g1, median_g2, mean_g2, n_g2
-# Build central tendencies (median preferred; mean as proxy)
-dat_ct <- dat %>%
+dat_use <- dat %>%
+  # Require at least one central tendency per group
+  filter((!is.na(median_g1) | !is.na(mean_g1)),
+         (!is.na(median_g2) | !is.na(mean_g2))) %>%
   mutate(
     ct_g1 = ifelse(!is.na(median_g1), median_g1, mean_g1),
     ct_g2 = ifelse(!is.na(median_g2), median_g2, mean_g2)
   )
 
-# Pool with DiVE (map ct_* into the 'med_*' slots)
 fit <- dive_df(
-  dat_ct,
-  cols = list(med_g1 = "ct_g1", n_g1 = "n_g1", med_g2 = "ct_g2", n_g2 = "n_g2"),
+  dat_use,
+  cols = list(med_g1 = "ct_g1", n_g1 = "n_g1",
+              med_g2 = "ct_g2", n_g2 = "n_g2"),
   direction = "g1_minus_g2",
-  ci_type = "t"
+  ci_type   = "t"
 )
 print(fit); summary(fit)
 ```
-Alternatively, use `dive_df_ct()` to construct central tendencies internally and run DiVE in one line.
+
+Alternatively, you can let dive_df_ct() handle the central tendencies:
+
+```r
+fit <- dive_df_ct(
+  dat,
+  direction = "g1_minus_g2",
+  ci_type   = "t",
+  policy    = "median_first"   # default: median if available, else mean
+)
+```
 
 
-## Available example datasets
+## Available example dataset
 
-- `meling_grs_all.csv`  — includes primary-study medians when available
-- `meling_grs_org.csv`  — follows the original meta-analysis reporting
-- `oyelade_sdnn_all.csv` — includes primary-study medians; shared control split 10/11
-- `oyelade_sdnn_org.csv` — follows the original meta-analysis reporting
+All example data live in inst/extdata/ and can be loaded via read_example():
 
-Use `read_example("<file>.csv")` to load; then build central tendencies per group
-(median preferred; mean as proxy).
+- Langhorne_ESD_all.csv — ESD vs conventional care after stroke; length of initial hospital stay (days); includes both medians and means where reported. Group 1 (*_g1) is ESD, group 2 (*_g2) is conventional care.
+
+Use:
+
+```r
+dat <- read_example("Langhorne_ESD_all.csv")
+```
+
+and then build central tendencies per group (median preferred; mean as proxy), as shown above.
+
+
+## Core functions
+
+- dive() — core DiVE estimator given numeric vectors.
+- dive_df() — DiVE from a data.frame with configurable column mapping.
+- dive_df_ct() — convenience wrapper that builds central tendencies (median-first, or mean-only / median-only via policy) and calls dive_df().
+- read_example() — load the shipped example dataset.
 
 
 ## Output fields
 
-- `estimate`: pooled difference (default: g1 - g2)
-- `se`, `ci_low`, `ci_high`: standard error and 95% CI from direct variance estimation
-- `var_hat`: directly estimated variance
-- `weights`, `wtilde`: integer weights (n_g1 + n_g2) and normalized weights
-- `diagnostics`: list with `n_studies`, `wmax`, `ci_type`, `direction`
+A call to dive() or dive_df() returns an object of class "dive" with:
 
-> **Column mapping.** If your column names differ, use `cols = list(med_g1=..., n_g1=..., med_g2=..., n_g2=...)` in `dive_df()` to map them explicitly.
+- estimate : pooled difference (default: g1 − g2)
+- se, ci_low, ci_high : standard error and 95% CI from direct variance estimation
+- var_hat : directly estimated variance
+- weights, wtilde : integer weights (n_g1 + n_g2) and normalized weights
+- diagnostics : list with
+　- n_studies : number of studies
+　- wmax : max(wtilde)
+　- ci_type : "t" or "normal"
+　- direction : "g1_minus_g2" or "g2_minus_g1"
+
+If your column names differ, use cols = list(med_g1 = ..., n_g1 = ..., med_g2 = ..., n_g2 = ...) in dive_df() to map them explicitly.
 
 
 ## Defaults
 
-- **CI**: t-interval with **df = K - 1** (set `ci_type = "normal"` to use the normal critical value).
-- **Direction**: default is `g1_minus_g2` (set `direction = "g2_minus_g1"` to flip the sign).
+- Contrast direction
+　- Default: direction = "g1_minus_g2" (here: ESD − conventional care).
+　- Set direction = "g2_minus_g1" to flip the sign.
+- Confidence interval
+　- Default: ci_type = "t" → 95% CI uses the t critical value with df = K − 1.
+　- Set ci_type = "normal" to use the standard-normal critical value.
 
 
 ## Requirements and constraints
 
-- Weights: for each study i, `w_i = n_g1 + n_g2` (total sample size of that study); normalized weights are `w_i / sum_j w_j`.
-- Theoretical requirement: **max(w~_i) < 0.5**. The function stops otherwise. Multi-arm trials with a shared control should split the control `n` across comparisons before calling `dive()`.
+DiVE is defined in terms of normalized total-sample weights:
+- Raw weights: w_i = n_g1i + n_g2i
+- Normalized: wtilde_i = w_i / Σ w_i
+
+The theoretical requirement is:
+- max(wtilde_i) < 0.5
+
+If this condition is violated, dive() will stop with an error. In multi-arm settings with a shared control group, the usual remedy is to split the control sample size across comparisons (keeping central tendencies unchanged) before calling DiVE, to avoid double-counting and overly dominant weights.
 
 
 ## Why not a forest plot?
 
-DiVE estimates the *pooled* difference and its variance directly from study-level contrasts of group-level central tendencies (median, or mean-as-proxy under symmetry) and sample sizes. It does **not** recover **within-study** sampling variances, so per-study confidence intervals (CIs) are **not defined** without introducing additional modeling or imputation assumptions outside the scope of the method. A classic forest plot therefore does not apply.
+DiVE estimates the pooled difference and its variance directly from:
 
-For transparency, we visualize results as:
-1) per-study group differences shown as **points only** (no CI) on a common scale,
-2) a **single pooled DiVE estimate with its 95% CI** (one line/diamond).
+- study-level contrasts of group-level central tendencies (median, or mean-as-proxy under symmetry), and
+- the corresponding sample sizes.
 
-This display matches DiVE’s estimand and avoids implying per-study precision
-that the method does not estimate.
+It does not recover within-study sampling variances.
+Therefore, per-study confidence intervals (CIs) are not defined without introducing additional modeling or imputation assumptions outside the scope of the method.
+A classic forest plot (per-study estimate + CI + pooled CI) is not appropriate.
 
-If a reviewer requests a forest-style figure, we can optionally:
-(a) overlay the pooled 95% CI across the per-study points (still no per-study CIs), or
-(b) provide a subset forest plot only for studies that report sufficient data to compute within-study SEs (e.g., mean+SD), clearly labeled as a subset analysis separate from DiVE’s main display.
+For transparency, we recommend displays such as:
+
+1.　per-study group differences shown as points only (no CI) on a common scale;
+2.　a single pooled DiVE estimate with its 95% CI (line or diamond).
+
+This matches DiVE’s estimand and avoids implying per-study precision that the method does not estimate.
 
 
 ## Data and scales
 
-We target a **common location shift** δ between groups. Under **approximate distributional symmetry** (e.g., near-normal), the **mean** is a reasonable proxy for the **median**. Therefore, we treat **mean-reported** and **median-reported** studies as measuring the **same estimand** (the location shift δ) and **pool them** with DiVE on a common scale.
-
-For transparency, figures show per-study points labeled by reporting type (mean vs median), and a single pooled DiVE estimate with CI.
-
-
-## Shared control (multi-arm) handling
-
-If a single control arm is reused to form two contrasts, split the control sample size across the comparisons before running dive(), while keeping the reported central tendencies unchanged. This avoids double-counting in DiVE’s sample-size weights.
-
-Note for the shipped examples. The CSVs included in this repository list Nagasako 2009 as a single row (control n_g2 = 21) and therefore no split is applied in the packaged data. If you prefer the “split-control” representation (e.g., 10 and 11), create two rows in your working dataset as follows:
-
-```r
-# example: split a shared control (n_g2 = 21) into 10 and 11
-library(dplyr)
-
-split_control <- function(df, study_id, g2_n1 = 10, g2_n2 = 11) {
-  i <- which(df$study_id == study_id)
-  stopifnot(length(i) == 1L, df$n_g2[i] == (g2_n1 + g2_n2))
-  r1 <- df[i, ]; r2 <- df[i, ]
-  r1$study_id <- paste0(study_id, "_A"); r1$n_g2 <- g2_n1
-  r2$study_id <- paste0(study_id, "_B"); r2$n_g2 <- g2_n2
-  bind_rows(df[-i, ], r1, r2)
-}
-
-# usage:
-# dat <- read_example("oyelade_sdnn_all.csv")
-# dat_split <- split_control(dat, "Nagasako2009", g2_n1 = 10, g2_n2 = 11)
-# fit <- dive_df_ct(dat_split, direction = "g1_minus_g2", ci_type = "t")
-```
+- DiVE targets a common location shift δ between two groups.
+- Under approximate distributional symmetry (e.g., near-normal outcomes), the mean is a reasonable proxy for the median; combining medians and means as central tendencies is interpretable on this basis.
+- For the Langhorne ESD example, the outcome is the length of stay in days, reported on a common and directly interpretable scale.
 
 
 ## Assumptions (for interpretation)
 
-- **Location-shift estimand**: all studies target the same location shift δ between groups.
-- **Approximate symmetry**: means can proxy medians under near-symmetric outcome distributions.
-- **Common scale**: transform outcomes to a common, interpretable scale before pooling.
-- **Shared controls**: split the control `n` across comparisons in multi-arm designs.
-- **DiVE requirement**: `max(wtilde) < 0.5` is enforced at runtime.
+- Location-shift estimand: all included studies target the same underlying location shift δ between groups.
+- Approximate symmetry: when means are used as proxies, outcome distributions are assumed not to be extremely skewed.
+- Common scale: outcomes are on a common, interpretable scale before pooling.
+- DiVE requirement: max(wtilde) < 0.5 is enforced at runtime.
 
 
 ## Reproducibility
 
-- No randomness is used; results are fully reproducible.
-- R >= 3.6 (recommend R >= 4.1).
-- Minimal dependencies (`stats`).
+- No randomness is used; results are fully deterministic and reproducible.
+- Requires R ≥ 3.6 (R ≥ 4.1 recommended).
+- Minimal dependencies (base R / stats).
 
 
 ## How to cite
 
-After acceptance, please cite the journal article and this package:
+After acceptance of the corresponding article, please cite both the journal paper and this package, for example via:
 
 ```r
 citation("diveMeta")
@@ -187,4 +205,4 @@ citation("diveMeta")
 
 ## License
 
-MIT (see `LICENSE` and `LICENSE.md`). © 2025 Tadahisa Okuda
+MIT (see LICENSE and LICENSE.md). © 2025 Tadahisa Okuda
