@@ -167,6 +167,7 @@ A classic forest plot (per-study estimate + CI + pooled CI) is not appropriate.
 For transparency, we recommend displays such as:
 
 1.　per-study group differences shown as points only (no CI) on a common scale;
+
 2.　a single pooled DiVE estimate with its 95% CI (line or diamond).
 
 This matches DiVE’s estimand and avoids implying per-study precision that the method does not estimate.

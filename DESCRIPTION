@@ -12,7 +12,7 @@ Description: Implements the DiVE method (Direct Variance Estimation) for pooling
     Given per-study median differences and sample sizes, DiVE computes a pooled
     estimate, a directly estimated variance, and confidence intervals without
     requiring within-study variance estimates. The default CI uses a t critical
-    value with df = K - 1.
+    value with df = N - 1.
 License: MIT + file LICENSE
 URL: https://github.com/OKD-Lab/diveMeta
 BugReports: https://github.com/OKD-Lab/diveMeta/issues
