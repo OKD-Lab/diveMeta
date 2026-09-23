@@ -20,6 +20,7 @@ Units: length of initial hospital stay in days.
 ## Notes
 
 - Analyses use a central tendency per group: median when available; otherwise mean as a proxy under approximate symmetry.
+- The manuscript real-data analysis used medians only and did not use the mean fallback; exact manuscript reproduction materials are under `reproducibility/`.
 - No within-study variances are provided or used; DiVE does not estimate per-study confidence intervals.
 - Group 1 (g1) is consistently the ESD/intervention arm; group 2 (g2) is the
   conventional care/control arm.

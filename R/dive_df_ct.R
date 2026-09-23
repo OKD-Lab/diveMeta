@@ -32,7 +32,7 @@ dive_df_ct <- function(data,
     stop("data must contain columns: ", paste(need_n, collapse = ", "))
   }
   
-  # 安全に取り出し（無い列は NA ベクトルで代用）
+  # Safely retrieve columns; use an NA vector when a column is absent.
   n <- nrow(data)
   get_or_na <- function(nm) if (nm %in% names(data)) data[[nm]] else rep(NA_real_, n)
   med_g1  <- get_or_na("median_g1")
@@ -74,7 +74,7 @@ dive_df_ct <- function(data,
   ct_g1 <- pick(med_g1,  mean_g1)
   ct_g2 <- pick(med_g2,  mean_g2)
   
-  # guard: 両群とも NA の行はエラー
+  # Guard: error if either group lacks a central tendency.
   bad <- which(is.na(ct_g1) | is.na(ct_g2))
   if (length(bad) > 0) {
     stop("central tendencies missing in rows: ",
@@ -86,7 +86,7 @@ dive_df_ct <- function(data,
   tmp$ct_g1 <- ct_g1
   tmp$ct_g2 <- ct_g2
   
-  # dive_df に渡す
+  # Pass to dive_df().
   dive_df(tmp,
           cols = list(med_g1 = "ct_g1", n_g1 = "n_g1",
                       med_g2 = "ct_g2", n_g2 = "n_g2"),

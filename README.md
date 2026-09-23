@@ -190,6 +190,8 @@ This matches DiVE’s estimand and avoids implying per-study precision that the 
 
 ## Reproducibility
 
+For exact reproduction of the manuscript analyses, see `reproducibility/README.md`. The manuscript analyses use study-level median differences only; the package's optional mean-fallback convenience functionality was not used for the manuscript analyses.
+
 - No randomness is used; results are fully deterministic and reproducible.
 - Requires R ≥ 3.6 (R ≥ 4.1 recommended).
 - Minimal dependencies (base R / stats).
