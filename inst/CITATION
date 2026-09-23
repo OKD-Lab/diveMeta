@@ -4,7 +4,7 @@ bibentry(
   bibtype = "Manual",
   title   = "diveMeta: DiVE (Direct Variance Estimation) for Meta-analysis using Medians",
   author  = person(given = "Tadahisa", family = "Okuda"),
-  year    = "2025",
+  year    = "2026",
   note    = "R package version 0.1.0",
   url     = "https://github.com/OKD-Lab/diveMeta"
 )
