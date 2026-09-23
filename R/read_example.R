@@ -1,8 +1,8 @@
 #' Read example dataset shipped with the package
 #'
 #' @description
-#' Read the example dataset used in the manuscript, based on the
-#' Langhorne et al. early supported discharge (ESD) trials.
+#' Read a package example dataset based on the Langhorne et al. early
+#' supported discharge (ESD) trials that underlie the manuscript's real-data application.
 #'
 #' @param name Character string; currently only
 #'   \code{"Langhorne_ESD_all.csv"} is available.

@@ -16,8 +16,8 @@ A \code{data.frame} with one row per study and the columns
 \code{n_g2}, \code{median_g2}, \code{mean_g2}.
 }
 \description{
-Read the example dataset used in the manuscript, based on the
-Langhorne et al. early supported discharge (ESD) trials.
+Read a package example dataset based on the Langhorne et al. early
+supported discharge (ESD) trials that underlie the manuscript's real-data application.
 }
 \examples{
 dat <- read_example("Langhorne_ESD_all.csv")
